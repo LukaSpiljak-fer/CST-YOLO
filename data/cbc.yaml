@@ -1,5 +1,5 @@
-train: ./datasets/cbc/Training/Images
-val: ./datasets/cbc/Validation/Images
+train: ./datasets/cbc/Training/images
+val: ./datasets/cbc/Validation/images
 
 nc: 3
 names: ['WBC', 'RBC', 'Platelets']

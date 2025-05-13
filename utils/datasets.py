@@ -365,6 +365,7 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
         self.path = path        
         #self.albumentations = Albumentations() if augment else None
 
+        print("Loading dataset: ", path)
         try:
             f = []  # image files
             for p in path if isinstance(path, list) else [path]:

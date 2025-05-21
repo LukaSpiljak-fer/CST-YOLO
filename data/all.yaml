@@ -1,0 +1,5 @@
+train: ./datasets/all/train/images
+val: ./datasets/all/valid/images
+
+nc: 3
+names: ['WBC', 'RBC', 'Platelets']

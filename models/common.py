@@ -108,7 +108,9 @@ class MCS2(nn.Module):
         y = self.sigmoid(y)
         out2 = x * y.expand_as(x)
 
-        result = out2[:,:256,...] + out2[:,256:512,...] + out2[:,512:768,...]+ out2[:,768:1024,...]
+        split = torch.chunk(out2, out2.shape[1] // 256, dim=1)
+        result = sum(split)
+        #result = out2[:,:256,...] + out2[:,256:512,...] + out2[:,512:768,...]+ out2[:,768:1024,...]
         result = self.conv6(result) + residual
         return result
 

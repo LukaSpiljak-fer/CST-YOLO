@@ -113,6 +113,36 @@ class MCS2(nn.Module):
         #result = out2[:,:256,...] + out2[:,256:512,...] + out2[:,512:768,...]+ out2[:,768:1024,...]
         result = self.conv6(result) + residual
         return result
+    
+class MCS3(nn.Module):
+    def __init__(self,c1,c2=0,k=0):
+        super().__init__()
+        self.dp1 = DPUP(c1,kernal=(16,16),scale=1.25)
+        self.dp2 = DPUP(c1,kernal=(5,5),scale=4)
+
+
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        self.conv = nn.Conv1d(1, 1, kernel_size=3, padding=1, bias=False)
+        self.sigmoid = nn.Sigmoid()
+
+        self.conv6 = Conv(256, c2, k=1)
+
+    def forward(self,x):
+        residual = x
+        dep1 = self.dp1(x)
+        dep2 = self.dp2(x)
+        out = torch.cat([dep1,dep2], dim=1)
+        y = self.avg_pool(out)
+        y = self.conv(y.squeeze(-1).transpose(-1, -2)).transpose(-1, -2).unsqueeze(-1)
+
+        y = self.sigmoid(y)
+        out2 = x * y.expand_as(x)
+
+        split = torch.chunk(out2, out2.shape[1] // 256, dim=1)
+        result = sum(split)
+        #result = out2[:,:256,...] + out2[:,256:512,...] + out2[:,512:768,...]+ out2[:,768:1024,...]
+        result = self.conv6(result) + residual
+        return result
 
 class TridentBlock(nn.Module):
     def __init__(self, c1, c2, stride=1,  e=1, padding=[1, 2, 3], dilate=[1, 2, 3], bias=False):

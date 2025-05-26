@@ -90,7 +90,6 @@ class MCS2(nn.Module):
         self.dp1 = DPUP(c1,kernal=(10,10),scale=2)
         self.dp2 = DPUP(c1,kernal=(8,8),scale=2.5)
 
-
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
         self.conv = nn.Conv1d(1, 1, kernel_size=3, padding=1, bias=False)
         self.sigmoid = nn.Sigmoid()

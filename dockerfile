@@ -13,7 +13,8 @@ RUN apt-get update && \
     libglib2.0-0 && \
     ln -fs /usr/share/zoneinfo/UTC /etc/localtime && \
     dpkg-reconfigure --frontend noninteractive tzdata && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/*\
+    git config --system --add safe.directory /app
 
 WORKDIR /app
 

@@ -7,26 +7,27 @@ from collections import defaultdict
 
 from models.experimental import attempt_load
 from utils.datasets import create_dataloader
-from utils.general import check_img_size
+from utils.general import check_img_size, non_max_suppression
 from utils.torch_utils import select_device
 
-def testModel(weight_path, dataloader, device, imgsz):
+def testModel(weight_path, dataloader, device, imgsz, conf_thres=0.25, iou_thres=0.45):
     model = attempt_load(weight_path, map_location=device)
     model.to(device).eval()
     results = {}
     for imgs, _, paths, _ in dataloader:
         imgs = imgs.to(device).float() / 255.0
         with torch.no_grad():
-            preds = model(imgs)
-        for i in range(min(len(paths), len(preds))):
+            pred = model(imgs)[0]
+            pred = non_max_suppression(pred, conf_thres, iou_thres)
+        for i in range(min(len(paths), len(pred))):
             path = paths[i]
             if (
-                isinstance(preds[i], torch.Tensor)
-                and preds[i].ndim == 2
-                and preds[i].shape[0] > 0
-                and preds[i].shape[1] > 4
+                isinstance(pred[i], torch.Tensor)
+                and pred[i].ndim == 2
+                and pred[i].shape[0] > 0
+                and pred[i].shape[1] > 4
             ):
-                num_objs = (preds[i][:, 4] > 0.25).sum().item()
+                num_objs = pred[i].shape[0]
             else:
                 num_objs = 0
             results[path] = num_objs

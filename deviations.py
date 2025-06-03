@@ -1,79 +1,80 @@
 import argparse
 import os
-import sys
-import torch
+import subprocess
 from pathlib import Path
-from collections import defaultdict
+import yaml
 
-from models.experimental import attempt_load
-from utils.datasets import create_dataloader
-from utils.general import check_img_size, non_max_suppression
-from utils.torch_utils import select_device
-
-def testModel(weight_path, dataloader, device, imgsz, conf_thres=0.25, iou_thres=0.45):
-    model = attempt_load(weight_path, map_location=device)
-    model.to(device).eval()
-    results = {}
-    for imgs, _, paths, _ in dataloader:
-        imgs = imgs.to(device).float() / 255.0
-        with torch.no_grad():
-            pred = model(imgs)[0]
-            pred = non_max_suppression(pred, conf_thres, iou_thres)
-        for i in range(min(len(paths), len(pred))):
-            path = paths[i]
-            if (
-                isinstance(pred[i], torch.Tensor)
-                and pred[i].ndim == 2
-                and pred[i].shape[0] > 0
-                and pred[i].shape[1] > 4
-            ):
-                num_objs = pred[i].shape[0]
-            else:
-                num_objs = 0
-            results[path] = num_objs
-    return results
+def run_detect(weight, image_path, img_size, conf_thres, iou_thres, device, save_dir):
+    # Remove previous label file if exists
+    label_dir = Path(save_dir) / 'labels'
+    label_dir.mkdir(parents=True, exist_ok=True)
+    label_file = label_dir / (Path(image_path).stem + '.txt')
+    if label_file.exists():
+        label_file.unlink()
+    # Run detect.py
+    cmd = [
+        'python', 'detect.py',
+        '--weights', str(weight),
+        '--source', str(image_path),
+        '--img-size', str(img_size),
+        '--conf-thres', str(conf_thres),
+        '--iou-thres', str(iou_thres),
+        '--device', str(device),
+        '--save-txt',
+        '--nosave',
+        '--project', str(save_dir),
+        '--name', 'exp',
+        '--exist-ok'
+    ]
+    subprocess.run(cmd, check=True)
+    # Count detections in label file
+    if label_file.exists():
+        with open(label_file, 'r') as f:
+            count = sum(1 for _ in f)
+    else:
+        count = 0
+    return count
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--weights', nargs='+', required=True, help='List of weights/checkpoints to compare')
     parser.add_argument('--data', type=str, required=True, help='data.yaml path')
     parser.add_argument('--img-size', type=int, default=640, help='Inference image size')
-    parser.add_argument('--batch-size', type=int, default=4)
-    parser.add_argument('--device', default='', help='cuda device or cpu')
+    parser.add_argument('--conf-thres', type=float, default=0.25, help='object confidence threshold')
+    parser.add_argument('--iou-thres', type=float, default=0.45, help='IOU threshold for NMS')
+    parser.add_argument('--device', default='0', help='cuda device or cpu')
     parser.add_argument('--threshold', type=int, default=3, help='Minimum difference in object count to flag')
+    parser.add_argument('--output', type=str, default='deviations.txt', help='Output file')
     args = parser.parse_args()
-    args.single_cls = False
 
     # Load data.yaml
-    import yaml
     with open(args.data) as f:
         data = yaml.safe_load(f)
     test_path = data['val']
 
-    device = select_device(args.device)
-    imgsz = check_img_size(args.img_size, 32)
+    # Get all image paths
+    if os.path.isdir(test_path):
+        image_paths = [str(Path(test_path) / x) for x in os.listdir(test_path) if x.lower().endswith(('.jpg', '.jpeg', '.png'))]
+    else:
+        with open(test_path) as f:
+            image_paths = [line.strip() for line in f if line.strip()]
 
-    dataloader, dataset = create_dataloader(
-        test_path, imgsz, args.batch_size, 32, args, hyp=None, augment=False, cache=False, rect=True, rank=-1,
-        world_size=1, workers=2, pad=0.5, prefix='')
+    results_per_image = {}
+    for image_path in image_paths:
+        counts = []
+        for weight in args.weights:
+            count = run_detect(weight, image_path, args.img_size, args.conf_thres, args.iou_thres, args.device, 'runs/detect')
+            counts.append(count)
+        results_per_image[image_path] = counts
 
-    all_results = []
-    for w in args.weights:
-        results = testModel(w, dataloader, device, imgsz)
-        all_results.append(results)
-
-    image_paths = list(all_results[0].keys())
-
-    with open('deviations.txt', 'w') as f:
+    with open(args.output, 'w') as f:
         f.write("All images and detected object counts:\n")
-        for path in image_paths:
-            counts = [results[path] for results in all_results]
+        for path, counts in results_per_image.items():
             line = f"{path}: {counts}\n"
             print(line, end='')
             f.write(line)
 
     flagged = []
-    for path in image_paths:
-        counts = [results[path] for results in all_results]
+    for path, counts in results_per_image.items():
         if max(counts) - min(counts) >= args.threshold:
             flagged.append((path, counts))

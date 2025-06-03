@@ -32,6 +32,7 @@ if __name__ == '__main__':
     parser.add_argument('--device', default='', help='cuda device or cpu')
     parser.add_argument('--threshold', type=int, default=3, help='Minimum difference in object count to flag')
     args = parser.parse_args()
+    args.single_cls = False
 
     # Load data.yaml
     import yaml

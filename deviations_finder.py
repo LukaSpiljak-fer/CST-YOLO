@@ -77,10 +77,3 @@ if __name__ == '__main__':
         counts = [results[path] for results in all_results]
         if max(counts) - min(counts) >= args.threshold:
             flagged.append((path, counts))
-    with open('deviations.txt', 'a') as f:
-        f.write("\nImages with strong deviations:\n")
-        print("\nImages with strong deviations:")
-        for path, counts in flagged:
-            line = f"{path}: {counts}\n"
-            print(line, end='')
-            f.write(line)

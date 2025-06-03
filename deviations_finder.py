@@ -5,15 +5,13 @@ import torch
 from pathlib import Path
 from collections import defaultdict
 
-from models.yolo import Model
+from models.experimental import attempt_load
 from utils.datasets import create_dataloader
 from utils.general import check_img_size
 from utils.torch_utils import select_device
 
-def testModel(weights, dataloader, device, imgsz):
-    model = Model(weights['cfg'], ch=3, nc=weights['nc'])
-    checkpoint = torch.load(weights['path'], map_location=device)
-    model.load_state_dict(checkpoint['model'].float().state_dict(), strict=False)
+def testModel(weight_path, dataloader, device, imgsz):
+    model = attempt_load(weight_path, map_location=device)
     model.to(device).eval()
     results = {}
     for imgs, _, paths, _ in dataloader:
@@ -28,7 +26,6 @@ def testModel(weights, dataloader, device, imgsz):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--weights', nargs='+', required=True, help='List of weights/checkpoints to compare')
-    parser.add_argument('--cfgs', nargs='+', required=True, help='List of model cfgs for each weight')
     parser.add_argument('--data', type=str, required=True, help='data.yaml path')
     parser.add_argument('--img-size', type=int, default=640, help='Inference image size')
     parser.add_argument('--batch-size', type=int, default=4)
@@ -50,10 +47,8 @@ if __name__ == '__main__':
         world_size=1, workers=2, pad=0.5, prefix='')
 
     all_results = []
-    for w, cfg in zip(args.weights, args.cfgs):
-        checkpoint = torch.load(w, map_location=device)
-        nc = checkpoint['model'].nc if hasattr(checkpoint['model'], 'nc') else data['nc']
-        results = testModel({'path': w, 'cfg': cfg, 'nc': nc}, dataloader, device, imgsz)
+    for w in args.weights:
+        results = testModel(w, dataloader, device, imgsz)
         all_results.append(results)
 
     image_paths = list(all_results[0].keys())
@@ -62,6 +57,19 @@ if __name__ == '__main__':
         f.write("All images and detected object counts:\n")
         for path in image_paths:
             counts = [results[path] for results in all_results]
+            line = f"{path}: {counts}\n"
+            print(line, end='')
+            f.write(line)
+
+    flagged = []
+    for path in image_paths:
+        counts = [results[path] for results in all_results]
+        if max(counts) - min(counts) >= args.threshold:
+            flagged.append((path, counts))
+    with open('deviations.txt', 'a') as f:
+        f.write("\nImages with strong deviations:\n")
+        print("\nImages with strong deviations:")
+        for path, counts in flagged:
             line = f"{path}: {counts}\n"
             print(line, end='')
             f.write(line)

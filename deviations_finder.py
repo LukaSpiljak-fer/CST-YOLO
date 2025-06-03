@@ -18,7 +18,8 @@ def testModel(weight_path, dataloader, device, imgsz):
         imgs = imgs.to(device).float() / 255.0
         with torch.no_grad():
             preds = model(imgs)
-        for i, path in enumerate(paths):
+        for i in range(min(len(paths), len(preds))):
+            path = paths[i]
             if (
                 isinstance(preds[i], torch.Tensor)
                 and preds[i].ndim == 2

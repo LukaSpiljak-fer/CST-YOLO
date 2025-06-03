@@ -64,7 +64,7 @@ if __name__ == '__main__':
 
     image_paths = list(all_results[0].keys())
 
-    with open('/output/deviations.txt', 'w') as f:
+    with open('deviations.txt', 'w') as f:
         f.write("All images and detected object counts:\n")
         for path in image_paths:
             counts = [results[path] for results in all_results]

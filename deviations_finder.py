@@ -1,8 +1,8 @@
 import re
 
-filename = "/output/deviations.txt"
+filename = "deviations.txt"
 threshold = 5  # Change this value for more/less sensitivity
-output_file = "/output/biggest_deviations.txt"
+output_file = "biggest_deviations.txt"
 
 deviations = []
 with open(filename, "r", encoding="utf-8") as f:

@@ -1,3 +1,4 @@
+Datasets: CST-YOLO, MCS2, MCS3, WELAN3, WELAN4
 All images and detected object counts:
 datasets/all/valid/images/BloodImage_00410bccd.jpg: [17, 18, 16, 17, 16]
 datasets/all/valid/images/BloodImage_00336cbc.jpg: [17, 18, 17, 16, 17]

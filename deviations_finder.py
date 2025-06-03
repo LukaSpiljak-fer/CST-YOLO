@@ -19,7 +19,12 @@ def testModel(weight_path, dataloader, device, imgsz):
         with torch.no_grad():
             preds = model(imgs)
         for i, path in enumerate(paths):
-            if isinstance(preds[i], torch.Tensor) and preds[i].ndim == 2 and preds[i].shape[1] > 4:
+            if (
+                isinstance(preds[i], torch.Tensor)
+                and preds[i].ndim == 2
+                and preds[i].shape[0] > 0
+                and preds[i].shape[1] > 4
+            ):
                 num_objs = (preds[i][:, 4] > 0.25).sum().item()
             else:
                 num_objs = 0

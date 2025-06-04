@@ -1,21 +1,18 @@
 import os
 import xml.etree.ElementTree as ET
 
-# Directory paths
 xml_directory = "C:/Faks/CST-YOLO/Datasets/BCCD_Dataset-master/BCCD/Annotations"
 output_directory = "C:/Faks/CST-YOLO/Datasets/BCCD_Dataset-master/BCCD/txtAnn"
 
-# Class mapping (update as per your dataset)
 class_mapping = {
-    "RBC": 0,  # Example class mappings
-    "WBC": 1,  # Add more classes as necessary
+    "WBC": 0,
+    "RBC": 1,
     "Platelet": 2
 }
 
 if not os.path.exists(output_directory):
     os.makedirs(output_directory)
 
-# Function to convert XML annotation to YOLO format
 def convert_xml_to_txt(xml_file_path, output_txt_path):
     tree = ET.parse(xml_file_path)
     root = tree.getroot()

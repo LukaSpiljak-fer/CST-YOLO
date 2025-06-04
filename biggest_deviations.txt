@@ -1,1 +1,0 @@
-datasets/all/valid/images/BloodImage_00000_jpg.rf.67c4a4312251eaa52b6ea2f2edf4855bbcd.jpg: [20, 14, 21, 19, 21]

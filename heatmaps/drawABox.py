@@ -1,4 +1,5 @@
 import cv2
+import argparse
 
 def drawABox(image_path, annotation_path, output_path):
     image = cv2.imread(image_path)
@@ -27,4 +28,11 @@ def drawABox(image_path, annotation_path, output_path):
     cv2.imwrite(output_path, image)
     print(f"Output saved to {output_path}")
 
-drawABox('test/BloodImage_00007.jpg', 'txtAnn/test/BloodImage_00007.txt', 'output.jpg')
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Draw bounding boxes from YOLO label file onto image.")
+    parser.add_argument('--image', type=str, required=True, help='Path to the image file')
+    parser.add_argument('--label', type=str, required=True, help='Path to the YOLO label (txt) file')
+    parser.add_argument('--output', type=str, required=True, help='Path to save the output image')
+    args = parser.parse_args()
+
+    drawABox(args.image, args.label, args.output)

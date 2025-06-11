@@ -6,7 +6,14 @@ import yaml
 
 def run_detect(weight, image_path, img_size, conf_thres, iou_thres, device, save_dir):
     # Use a unique subdirectory for each weight
-    weight_name = Path(weight).stem.replace('.', '_')
+    try:
+        weight_name = weight.split('/')[3]
+    except:
+        try:
+            wpath = weight.split('/')
+            weight_name = wpath[len(wpath)-2]
+        except:
+            weight_name = "WrongName"
     exp_name = f'deviations_{weight_name}'
     label_dir = Path(save_dir) / exp_name / 'labels'
     label_dir.mkdir(parents=True, exist_ok=True)

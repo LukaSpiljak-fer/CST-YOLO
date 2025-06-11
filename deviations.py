@@ -43,9 +43,8 @@ if __name__ == '__main__':
     parser.add_argument('--data', type=str, required=True, help='data.yaml path')
     parser.add_argument('--img-size', type=int, default=640, help='Inference image size')
     parser.add_argument('--conf-thres', type=float, default=0.25, help='object confidence threshold')
-    parser.add_argument('--iou-thres', type=float, default=0.45, help='IOU threshold for NMS')
+    parser.add_argument('--iou-thres', type=float, default=0.65, help='IOU threshold for NMS')
     parser.add_argument('--device', default='0', help='cuda device or cpu')
-    parser.add_argument('--threshold', type=int, default=3, help='Minimum difference in object count to flag')
     parser.add_argument('--output', type=str, default='deviations.txt', help='Output file')
     args = parser.parse_args()
 
@@ -75,8 +74,3 @@ if __name__ == '__main__':
             line = f"{path}: {counts}\n"
             print(line, end='')
             f.write(line)
-
-    flagged = []
-    for path, counts in results_per_image.items():
-        if max(counts) - min(counts) >= args.threshold:
-            flagged.append((path, counts))

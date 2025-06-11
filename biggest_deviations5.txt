@@ -1,7 +1,0 @@
-BloodImage_00154_jpg.rf.e5b45569e9cbede1ed36f82f14566c29bcd.txt [22, 17, 21, 24, 22]
-BloodImage_00160_jpg.rf.894e8c8c7179ec9958a4d6c7b6b45616bcd.txt [22, 27, 25, 19, 28]
-BloodImage_00302_jpg.rf.911302bb5caaf9467e101afeece651e1bcd.txt [22, 31, 22, 23, 24]
-BloodImage_00327bccd.txt [21, 25, 22, 18, 18]
-BloodImage_00334_jpg.rf.8b2c2a9c5a39e78eb74aa26c82967069bcd.txt [22, 28, 22, 22, 22]
-BloodImage_00369_jpg.rf.c3818de705d661536ed7e4ce49040020bcd.txt [30, 36, 30, 31, 30]
-BloodImage_00386_jpg.rf.c708422b2d9c642f200a853e70012850bcd.txt [19, 26, 20, 19, 20]

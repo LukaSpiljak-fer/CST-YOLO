@@ -5,8 +5,10 @@ from pathlib import Path
 import yaml
 
 def run_detect(weight, image_path, img_size, conf_thres, iou_thres, device, save_dir):
-    # Remove previous label file if exists
-    label_dir = Path(save_dir) / 'labels'
+    # Use a unique subdirectory for each weight
+    weight_name = Path(weight).stem.replace('.', '_')
+    exp_name = f'deviations_{weight_name}'
+    label_dir = Path(save_dir) / exp_name / 'labels'
     label_dir.mkdir(parents=True, exist_ok=True)
     label_file = label_dir / (Path(image_path).stem + '.txt')
     if label_file.exists():
@@ -23,7 +25,7 @@ def run_detect(weight, image_path, img_size, conf_thres, iou_thres, device, save
         '--save-txt',
         '--nosave',
         '--project', str(save_dir),
-        '--name', 'exp',
+        '--name', exp_name,
         '--exist-ok'
     ]
     subprocess.run(cmd, check=True)

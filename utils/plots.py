@@ -7,6 +7,7 @@ import random
 from copy import copy
 from pathlib import Path
 
+import argparse
 import cv2
 import matplotlib
 import matplotlib.pyplot as plt
@@ -487,3 +488,40 @@ def plot_skeleton_kpts(im, kpts, steps, orig_shape=None):
         if pos2[0] % 640 == 0 or pos2[1] % 640 == 0 or pos2[0]<0 or pos2[1]<0:
             continue
         cv2.line(im, pos1, pos2, (int(r), int(g), int(b)), thickness=2)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Draw bounding boxes from YOLO label file onto image.")
+    parser.add_argument('--image', type=str, required=True, help='Path to the image file')
+    parser.add_argument('--label', type=str, required=True, help='Path to the YOLO label file')
+    parser.add_argument('--names', nargs='+', required=True, help='List of class names')
+    parser.add_argument('--output', type=str, default='output.jpg', help='Output image file name')
+    args = parser.parse_args()
+
+    img = cv2.imread(args.image)
+    h_img, w_img = img.shape[:2]
+
+    # Use the same color palette as detect.py
+    colors = [(0,255,0),(0,0,255),(255,0,0)]
+    line_thickness = 1
+
+    with open(args.label) as f:
+        for line in f:
+            parts = line.strip().split()
+            if len(parts) < 5:
+                continue
+            cls, x, y, w, h = map(float, parts[:5])
+            conf = float(parts[5]) if len(parts) > 5 else None
+            x1 = int((x - w / 2) * w_img)
+            y1 = int((y - h / 2) * h_img)
+            x2 = int((x + w / 2) * w_img)
+            y2 = int((y + h / 2) * h_img)
+            class_idx = int(cls)
+            color = colors[class_idx % len(colors)]
+            if conf is not None:
+                label = f"{args.names[class_idx]} {conf:.2f}"
+            else:
+                label = args.names[class_idx] if class_idx < len(args.names) else str(class_idx)
+            plot_one_box([x1, y1, x2, y2], img, color=color, label=label, line_thickness=line_thickness)
+
+    cv2.imwrite(args.output, img)
+    print(f"Saved image with boxes to {args.output}")

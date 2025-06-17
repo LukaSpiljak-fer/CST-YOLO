@@ -1,3 +1,4 @@
+#[cstyolo, MCS2, MCS3, WELAN3, WELAN4]
 datasets/all/test/images/BloodImage_00067bccd.jpg: [29, 23, 23, 30, 24]
 datasets/all/test/images/BloodImage_00227_jpg.rf.d1790b0cdc042312d1e0af86a5c13519bcd.jpg: [21, 20, 17, 23, 26]
 datasets/all/test/images/BloodImage_00157bccd.jpg: [17, 15, 10, 17, 18]

@@ -53,6 +53,7 @@ if __name__ == '__main__':
     parser.add_argument('--iou-thres', type=float, default=0.65, help='IOU threshold for NMS')
     parser.add_argument('--device', default='0', help='cuda device or cpu')
     parser.add_argument('--output', type=str, default='deviations.txt', help='Output file')
+    parser.add_argument('--conf-thres-list', nargs='+', type=float, help='List of confidence thresholds for each weight')
     args = parser.parse_args()
 
     # Load data.yaml
@@ -67,11 +68,17 @@ if __name__ == '__main__':
         with open(test_path) as f:
             image_paths = [line.strip() for line in f if line.strip()]
 
+    # Validate conf-thres-list
+    if args.conf_thres_list:
+        if len(args.conf_thres_list) != len(args.weights):
+            raise ValueError('Length of --conf-thres-list must match number of --weights')
+
     results_per_image = {}
     for image_path in image_paths:
         counts = []
-        for weight in args.weights:
-            count = run_detect(weight, image_path, args.img_size, args.conf_thres, args.iou_thres, args.device, 'runs/detect')
+        for idx, weight in enumerate(args.weights):
+            conf_thres = args.conf_thres_list[idx] if args.conf_thres_list else args.conf_thres
+            count = run_detect(weight, image_path, args.img_size, conf_thres, args.iou_thres, args.device, 'runs/detect')
             counts.append(count)
         results_per_image[image_path] = counts
 

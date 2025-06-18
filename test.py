@@ -335,7 +335,8 @@ if __name__ == '__main__':
              save_conf=opt.save_conf,
              trace=not opt.no_trace,
              v5_metric=opt.v5_metric,
-             not_normalized_conf_matrix=opt.notNormalizedConfMatrix
+             not_normalized_conf_matrix=opt.notNormalizedConfMatrix,
+             plots=True
              )
 
     elif opt.task == 'speed':  # speed benchmarks

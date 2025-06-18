@@ -1,7 +1,7 @@
 import re
 
 filename = "deviations.txt"
-threshold = 6  # Change this value for more/less sensitivity
+threshold = 8  # Change this value for more/less sensitivity
 output_file = "biggest_deviations.txt"
 
 deviations = []

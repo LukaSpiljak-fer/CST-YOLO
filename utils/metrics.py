@@ -170,7 +170,7 @@ class ConfusionMatrix:
                 array[array < 0.005] = np.nan  # don't annotate (would appear as 0.00)
                 fmt = '.2f'
             else:
-                array = self.matrix
+                array = self.matrix.astype(int)
                 fmt = 'd'
 
             fig = plt.figure(figsize=(12, 9), tight_layout=True)
@@ -183,7 +183,7 @@ class ConfusionMatrix:
             fig.axes[0].set_ylabel('Predicted')
             fig.savefig(Path(save_dir) / 'confusion_matrix.png', dpi=250)
         except Exception as e:
-            pass
+            print(f"ConfusionMatrix plot error: {e}")
 
     def print(self):
         for i in range(self.nc + 1):

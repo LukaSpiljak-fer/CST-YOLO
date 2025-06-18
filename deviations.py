@@ -54,6 +54,7 @@ if __name__ == '__main__':
     parser.add_argument('--device', default='0', help='cuda device or cpu')
     parser.add_argument('--output', type=str, default='deviations.txt', help='Output file')
     parser.add_argument('--conf-thres-list', nargs='+', type=float, help='List of confidence thresholds for each weight')
+    parser.add_argument('--labels-dir', type=str, required=True, help='Directory containing ground truth label .txt files')
     args = parser.parse_args()
 
     # Load data.yaml
@@ -80,10 +81,18 @@ if __name__ == '__main__':
             conf_thres = args.conf_thres_list[idx] if args.conf_thres_list else args.conf_thres
             count = run_detect(weight, image_path, args.img_size, conf_thres, args.iou_thres, args.device, 'runs/detect')
             counts.append(count)
+        # Add ground truth count from label file
+        label_file = Path(args.labels_dir) / (Path(image_path).stem + '.txt')
+        if label_file.exists():
+            with open(label_file, 'r') as lf:
+                gt_count = sum(1 for _ in lf)
+        else:
+            gt_count = 0
+        counts.append(gt_count)
         results_per_image[image_path] = counts
 
     with open(args.output, 'w') as f:
-        f.write("All images and detected object counts:\n")
+        f.write("All images and detected object counts (last value is ground truth):\n")
         for path, counts in results_per_image.items():
             line = f"{path}: {counts}\n"
             print(line, end='')

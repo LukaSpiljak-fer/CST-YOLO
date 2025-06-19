@@ -30,7 +30,6 @@ def run_detect(weight, image_path, img_size, conf_thres, iou_thres, device, save
         '--iou-thres', str(iou_thres),
         '--device', str(device),
         '--save-txt',
-        '--nosave',
         '--project', str(save_dir),
         '--name', exp_name,
         '--exist-ok'

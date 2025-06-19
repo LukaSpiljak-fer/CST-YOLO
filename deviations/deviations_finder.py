@@ -6,12 +6,14 @@ parser.add_argument('--threshold', type=float, required=True, help='Deviation th
 parser.add_argument('--indexes', nargs='+', type=int, required=True, help='Indexes to compare (0-based)')
 parser.add_argument('--input', type=str, default='deviations.txt', help='Input file')
 parser.add_argument('--output', type=str, default='biggest_deviations.txt', help='Output file')
+parser.add_argument('--mode', type=str, choices=['greater', 'less'], default='greater', help="Mode: 'greater' for deviations > threshold, 'less' for deviations < threshold")
 args = parser.parse_args()
 
 filename = args.input
 threshold = args.threshold
 output_file = args.output
 indexes = args.indexes
+mode = args.mode
 
 deviations = []
 with open(filename, "r", encoding="utf-8") as f:
@@ -27,10 +29,13 @@ with open(filename, "r", encoding="utf-8") as f:
                 if not rest:
                     continue
                 mean_rest = sum(rest) / len(rest)
-                if abs(val - mean_rest) > threshold:
+                diff = abs(val - mean_rest)
+                if (mode == 'greater' and diff > threshold) or (mode == 'less' and diff < threshold):
                     deviations.append(line.strip())
                     break
 
 with open(output_file, "w", encoding="utf-8") as out:
     for line in deviations:
         out.write(line + "\n")
+
+print(f"Found {len(deviations)} cases.")

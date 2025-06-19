@@ -1,2 +1,0 @@
-datasets/all/test/images/BloodImage_00386cbc.jpg: [19, 19, 19, 19, 18, 15]
-datasets/all/test/images/BloodImage_00386_jpg.rf.c708422b2d9c642f200a853e70012850bcd.jpg: [19, 19, 18, 19, 18, 15]

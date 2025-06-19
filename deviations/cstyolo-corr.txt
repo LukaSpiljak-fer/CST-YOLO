@@ -1,1 +1,0 @@
-datasets/all/test/images/BloodImage_00018bccd.jpg: [22, 34, 28, 27, 32, 22]

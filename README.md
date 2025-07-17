@@ -21,11 +21,11 @@ Red Blood Cells (RBC), White Blood Cells (WBC) and Platelets
 
 # Model Variants
 Model	Params    GFLOPS   mAP@.5 	Inference Time	Notes
-CST-YOLO  100%	235.4    0.733	  14.47 ms	      Baseline
-MCS2	    95.9%	156.1	   0.699	  14.20 ms	      Fastest variant
-MCS3	    95.9%	168.4	   0.735	  14.25 ms	      Best precision-speed tradeoff
-WELAN3	  94.8%	223.3	   0.717	  13.69 ms	      Best platelet detection
-WELAN4	  89.1%	226.9	   0.748	  13.80 ms	      Highest accuracy
+-CST-YOLO  100%	235.4    0.733	  14.47 ms	      Baseline
+-MCS2	    95.9%	156.1	   0.699	  14.20 ms	      Fastest variant
+-MCS3	    95.9%	168.4	   0.735	  14.25 ms	      Best precision-speed tradeoff
+-WELAN3	  94.8%	223.3	   0.717	  13.69 ms	      Best platelet detection
+-WELAN4	  89.1%	226.9	   0.748	  13.80 ms	      Highest accuracy
 
 # Key Contributions
 Introduced and evaluated four optimized versions of CST-YOLO.

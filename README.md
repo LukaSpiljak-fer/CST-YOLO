@@ -5,12 +5,12 @@ This repository contains the implementation and experimentation of improved vari
 This project is an attempt, results and overview of optimizing a computer vision model for blood cell detection and classification.  
 
 CST-YOLO is a hybrid architecture combining:  
-YOLOv7's real-time object detection capabilities  
-CNN-SWIN Transformer (CST) for improved detection of small and overlapping objects  
+- YOLOv7's real-time object detection capabilities  
+- CNN-SWIN Transformer (CST) for improved detection of small and overlapping objects  
 
 In this repository, several optimized variants of CST-YOLO are proposed to improve inference speed while maintaining accuracy:  
-MCS2 and MCS3 (reduced complexity of MCS module)  
-WELAN3 and WELAN4 (simplified Weighted ELAN modules)  
+- MCS2 and MCS3 (reduced complexity of MCS module)  
+- WELAN3 and WELAN4 (simplified Weighted ELAN modules)  
 
 # Datasets Used
 Three publicly available datasets were used:  

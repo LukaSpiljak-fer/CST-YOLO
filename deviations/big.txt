@@ -1,4 +1,0 @@
-datasets/all/test/images/BloodImage_00112_jpg.rf.978cec39235980055c2ad7ff8b6f1912bcd.jpg: [12, 11, 9, 12, 16, 15]
-datasets/all/test/images/BloodImage_00347cbc.jpg: [20, 13, 17, 20, 25, 19]
-datasets/all/test/images/BloodImage_00234bccd.jpg: [16, 15, 14, 18, 21, 11]
-datasets/all/test/images/BloodImage_00249bccd.jpg: [13, 13, 18, 19, 20, 3]

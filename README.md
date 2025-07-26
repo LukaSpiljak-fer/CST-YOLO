@@ -45,15 +45,15 @@ Single GPU training:
 Multiple GPU training:  
 `python -m torch.distributed.launch --nproc_per_node 4 --master_port 9527 train.py --workers 2 --device 0,1,2,3 --sync-bn --batch-size 128 --data data/all.yaml --img 640 640 --cfg cfg/training/cst-yolo.yaml --weights '' --name cst-yolo --hyp data/hyp.scratch.p5.yaml`
 
-**Testing**
+**Testing**  
 `python test.py --data data/alltesst.yaml --img 640 --batch 32 --conf 0.001 --iou 0.65 --device 0 --weights output/model/weights/best.pt --name test`
 
-**Single image detection**
+**Single image detection**  
 `python detect.py --weights output/cstyolo/weights/best.pt \
 --source datasets/all/test/images/BloodImage_00137bccd.jpg \
 --conf-thres 0.287 --device 0 --project cstyolodevs --name MCS2`
 
-**Multiple model comparison**
+**Multiple model comparison**  
 `python deviations.py --weights output/model1/weights/best.pt output/model2/weights/best.pt output/model3/weights/best.pt --data data/alltest.yaml --conf-thres-list 0.6 conf2 conf3 --device 0 --labels-dir datasets/all/test/labels`
 
 # Links

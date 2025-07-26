@@ -55,9 +55,7 @@ python test.py --data data/alltesst.yaml --img 640 --batch 32 --conf 0.001 --iou
 ```
 **Single image detection**  
 ```bash
-python detect.py --weights output/cstyolo/weights/best.pt \
---source datasets/all/test/images/BloodImage_00137bccd.jpg \
---conf-thres 0.287 --device 0 --project cstyolodevs --name MCS2
+python detect.py --weights output/cstyolo/weights/best.pt --source datasets/all/test/images/BloodImage_00137bccd.jpg --conf-thres 0.287 --device 0 --project cstyolodevs --name MCS2
 ```
 
 **Multiple model comparison**  
